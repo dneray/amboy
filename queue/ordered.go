@@ -326,7 +326,7 @@ func (q *depGraphOrderedLocal) jobDispatch(ctx context.Context, orderedJobs []gr
 						// we're not waiting for it
 						continue
 					}
-
+					q.mutex.Lock()
 					if q.tasks.completed[dep] || q.tasks.m[dep].Status().Completed {
 						// we've not seen this task
 						// before, but we're not
@@ -335,6 +335,7 @@ func (q *depGraphOrderedLocal) jobDispatch(ctx context.Context, orderedJobs []gr
 						// future.
 						completedDeps[dep] = true
 					}
+					q.mutex.Unlock()
 					// if neither of the above cases are
 					// true, then we're still waiting for
 					// a job. might make sense to put a
